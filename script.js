@@ -2,11 +2,13 @@ const chatInput = document.querySelector(".chat-input textarea");
 const sendChatBtn = document.querySelector(".chat-input span");
 const chatbox = document.querySelector(".chatbox");
 const chatbotToggeler = document.querySelector(".chatbot-toggler");
+const chatbotCloseBtn = document.querySelector(".close-btn");
 
 
 let userMessage;
 
-const API_KEY = "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";
+const API_KEY = "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";
+const inputInitHeight = chatInput.scrollHeight;
 
 const createChatLi = (message, className) => {
   const chatLi = document.createElement("li");
@@ -43,6 +45,7 @@ const generateResponse = (incomingChatLi) => {
       messageElement.textContent = data.choices[0].message.content;
     })
     .catch((error) => {
+      messageElement.classList.add("error")
       messageElement.textContent = "Oops! Something went wrong. Please try again";
   
 }).finally(() => chatbox.scrollTo(0, chatbox.scrollHeight));
@@ -52,6 +55,7 @@ const handleChat = () => {
   userMessage = chatInput.value.trim();
   if (!userMessage) return;
   chatInput.value = "";
+  chatInput.style.height = `${inputInitHeight}px`;
 
   chatbox.appendChild(createChatLi(userMessage, "outgoing"));
   chatbox.scrollTo(0, chatbox.scrollHeight);
@@ -66,5 +70,20 @@ const handleChat = () => {
 };
 
 
+chatInput.addEventListener("input", () => {
+  // Adjust the height of the input textarea based on its content
+  chatInput.style.height = `${inputInitHeight}px`;
+  chatInput.style.height = `${chatInput.scrollHeight}px`;
+});
+
+chatInput.addEventListener("keydown", (e) => {
+  if(e.key === "Enter" && !e.shiftKey && window.innerWidth > 800){
+    e.preventDefault();
+    handleChat();
+  }
+});
+
+
 sendChatBtn.addEventListener("click", handleChat);
-chatbotToggeler.addEventListener("click", () => document.body.classList.toggle("show-chatbot"))
+chatbotToggeler.addEventListener("click", () => document.body.classList.remove("show-chatbot"));
+chatbotToggeler.addEventListener("click", () => document.body.classList.toggle("show-chatbot"));
